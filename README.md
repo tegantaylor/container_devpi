@@ -2,12 +2,15 @@
 An offline Devpi server and Devpi web interface in a container to store Python packages in on-site indexes
 
 **Build the container**
+
 Use the Dockerfile to build the container. The "Docker-entrypoint.sh" file will be pulled into the build.
 
 **Run the container**
+
 Use the Docker-Compose.yml file to stand up the container with docker-compose.
 
 **Access the web interface**
+
 http://localhost:3141/
 
 **Uploading python packages files**
@@ -31,6 +34,7 @@ devpi upload --from-dir --formats=* ./pip-packages
 Note: Run "ls" to see which directory you are in - pip-packages can be replaced with which ever directory you copied the files into on the host.
 
 **Pulling packages from Devpi server**
+
 You need to tell the pip install line that you want to use the local devpi server as the source for the package, and that the devpi server is a trusted repo.
 
 ```
