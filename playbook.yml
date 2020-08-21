@@ -1,0 +1,51 @@
+---
+
+- name: Deploy devpi container as a compose service on the Gitlab server node
+  hosts: all
+  tasks:
+    - name: 'Setup volumes for devpi package storage'
+      become: true
+      file:
+        path: "/data/devpi"
+        state: directory
+        mode: "0775"
+        recurse: yes
+
+    # Create a dir to store devpi docker-compose file.
+    - name: 'Create the devpi compose directory'
+      become: true
+      file:
+        path: "/devpi"
+        state: directory
+        mode: "0775"
+        recurse: yes
+ 
+    - name: 'Copy the compose file'
+      become: true
+      template:
+        src: docker-compose.yml.jinja2
+        dest: "/devpi/docker-compose.yml"
+        force: true
+        trim_blocks: no
+        lstrip_blocks: no
+ 
+    - name: 'Tear down existing services'
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+      become: true
+      docker_compose:
+        project_name: devpi
+        project_src: /devpi
+        state: absent
+        
+    - name: 'Create and start services'
+      vars:
+        ansible_python_interpreter: /usr/bin/python3    
+      become: true
+      docker_compose:
+        project_name: devpi
+        project_src: /devpi
+      register: output
+      
+    - debug:
+        var: output
