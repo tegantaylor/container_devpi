@@ -1,12 +1,5 @@
 version: "3.8"
 
-x-logging:
-  &default-logging
-  options:
-    max-size: 12m
-    max-file: 5
-  driver: json-file
-
 networks:
   mgmt_bridge_net:
     driver: bridge
@@ -30,8 +23,7 @@ services:
       - 3141:3141
     environment:
       - DEVPI_PASSWORD=THEPASSWORD
-    restart: always  
-    logging: *default-logging  
+    restart: always
     healthcheck:
       test: "curl --silent --fail localhost:3141 || exit 1"
       interval: 1m30s
