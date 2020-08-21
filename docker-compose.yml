@@ -1,0 +1,40 @@
+version: "3.8"
+
+x-logging:
+  &default-logging
+  options:
+    max-size: 12m
+    max-file: 5
+  driver: json-file
+
+networks:
+  mgmt_bridge_net:
+    driver: bridge
+
+volumes:
+  devpi:
+    driver: local
+
+services:
+  devpi:
+    image: container_devpi:latest
+    deploy:
+      resources:
+        limits:
+          memory: 1GB   
+    volumes:
+      - /data/devpi:/data
+    networks:
+      - mgmt_bridge_net
+    ports:
+      - 3141:3141
+    environment:
+      - DEVPI_PASSWORD=THEPASSWORD
+    restart: always  
+    logging: *default-logging  
+    healthcheck:
+      test: "curl --silent --fail localhost:3141 || exit 1"
+      interval: 1m30s
+      timeout: 50s
+      retries: 5
+      start_period: 60s
